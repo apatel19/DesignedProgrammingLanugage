@@ -1,0 +1,94 @@
+pogram		: definition 
+		| definition program
+
+definition	: varDefinition
+		| funcDefinition
+                | structdef
+                | idDef
+
+structdef	: STRUCT ID block
+
+varDefinition	: VAR ID EQUAL expr SEMI
+		| VAR ID SEMI
+                | ID EQUAL expr SEMI
+
+funcDefinition	: FUNCTION ID OPAREN optParamList CPAREN block
+
+funcCall    	: ID OPAREN optParamList CPAREN
+
+idDef	        : ID
+	        | ID OBRACKET optExprList CBRACKET SEMI
+                 
+optParamList	: parameterList
+		| *EMPTY*
+
+parameterList 	: ID
+		| ID COMMA parameterList
+
+optExprList	: expressionList
+		| *EMPTY*
+
+expressionList	: expr
+		| expr COMMA expressionList
+
+expr            : unary
+                | unary operator expr
+
+numeric         : INTEGER
+	        | REAL
+
+unary           : idDef
+                | STRING
+                | numeric
+	        | CHAR
+                | MINUS unary
+                | OPAREN expr CPAREN
+                | funcCall
+                | NULL
+                | TRUE
+                | FALSE  
+                | PRINT OPAREN expressionList CPAREN
+	        | RETURN optExprList SEMI
+                | NOT
+	
+
+operator        : 
+                | NOTEQUAL
+                | GREATER
+                | LESS
+                | GREATEREQUAL
+                | LESSEQUAL
+                | PLUS
+                | MINUS
+	        | MOD
+                | MULTIPLY
+                | DIVIDE
+                | INTEGERDIVIDE
+                | POWER
+                | AND
+                | OR
+                | DOUBLEEQUAL
+
+block           : OBRACE optStatementList CBRACE
+
+optStatementList : statementList
+                 | *EMPTY*
+
+statementList    : statement
+                 | statement statementList
+
+statement        : variableDefinition
+                 | functionDefinition
+                 | expr SEMI
+                 | whileLoop
+                 | ifStatementvar
+
+whileLoop        : WHILE OPAREN expr CPAREN block
+ 
+ifStatement      : IF OPAREN expr CPAREN block optElseStatement
+
+optElseStatement : elseStatement
+                 | *EMPTY*
+
+elseStatement    : ELSE block
+                 | ELSE ifStatement

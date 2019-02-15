@@ -1,0 +1,67 @@
+&^
+	Author: Apurva Patel
+	File: program.txt
+^&
+
+var num = 10;
+
+function loop (limit) {
+	var i = 0;
+	while (i < limit) {
+	&& num = (num + 1) * 2;
+	 i = i + 1;
+	}
+	
+	if (num / 2 == 0){
+		print("Current number is even.");
+	} else {
+		print("Current number is odd.");
+	} 
+}
+
+loop(10);
+
+var firstName = "Apurva";
+
+function stringConcatinate (str) {
+	
+	if (str == NULL) {
+		return "Empty String";
+	}	
+
+	var lastName = "Patel";
+
+	return str + lastName;	
+}
+
+
+struct test {
+	var x;
+	var y;
+}
+
+
+
+function setStruct (test) {	
+	function setValue (X, Y){
+		test.x = X;
+		test.y = Y;
+		return doMath(test);
+	}	
+	return setValue;
+}
+
+var obj = setStruct(test);
+
+var x = obj(25, 4);
+
+function doMath (test) {
+	var answer = test.x % test.y;
+	print(x);
+	print("Done");
+	return answer;
+}
+
+
+
+

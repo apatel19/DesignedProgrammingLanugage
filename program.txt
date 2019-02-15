@@ -1,0 +1,71 @@
+/*
+	Author: Apurva Patel
+	File: program.txt
+	Description: An Example based on my grammer.txt into a program.
+*/
+
+var num = 10;
+
+function printCurrentNum (x) {
+	print(x)
+} 
+
+printCurrentNum (num)
+
+function loop (limit) {
+	var i = 0;
+	while (i < limit) {
+	 num = (num + 1) * 2;
+	 i = i + 1;
+	}
+	
+	if (num / 2 == 0){
+		print("Current number is even.")
+	} else if (num / 2 != 0){
+		print("Current number is odd.")
+	} else {
+		print("Current number is zero.")
+	}	
+}
+
+loop (10)
+
+var firstName = "Apurva";
+
+func stringConcatinate (str) {
+	
+	if (str == NULL) {
+		return "Empty String";
+	}	
+
+	var lastName = "Patel";
+
+	return str + lastName;	
+}
+
+print(stringConcatinate(NULL))
+print(stringConcatinate(firstName))
+
+struct test {
+	var x;
+	var y;
+}
+
+function setStruct (test) {	
+	function setValue (X, Y){
+		test.x = X;
+		test.y = Y;
+		return doMath(test);
+	}	
+	return setValue;
+}
+
+function doMath (test) {
+	var answer = test.x % test.y;
+	return answer;
+}
+
+var obj = setStruct(test);
+
+print(obj(25, 4))
+print("Done")

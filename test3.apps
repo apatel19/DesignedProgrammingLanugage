@@ -1,0 +1,63 @@
+&^
+    Author: Apurva Patel
+    Description: Implementing small math game.
+^&
+
+var round;
+var playerName;
+
+function restart() {
+    start();
+}
+
+function getRandomNumber () {
+    var num = Math.random() * 49 + 1;
+    return num;
+}
+
+function checkAnswer (computed, entered) {
+    if (computed == entered) {
+        return TRUE;
+    } 
+        return FALSE;
+}
+
+function start () {
+
+    round = 10;
+    print("Enter Player name: ");
+    playerName = System.next();
+
+    print("Hello, " + playerName);
+    print("After computing shown equation you must enter value you computed.");
+    
+    var currentRound = 0;
+
+    while (currentRound <= round) {
+        var random1 = getRandomNumber();
+        var random2 = getRandomNumber();
+
+        var computed = random1 + random2;
+        
+        print("\(random1) + \(random2) + = WHAT?");
+
+        var entered = scanner.nextInt();
+
+        if (checkAnswer(computed, entered) == TRUE) {
+            print("Right");
+        } else {
+            print("Game Over! Final score is " + currentRound);
+        }
+        currentRound = currentRound + 1;
+    }
+    print("To restart enter 0 to quit enter 1.");
+    var d = scanner.nextInt();
+
+    if (d == 0) {
+        restart();
+    } else {
+        return 0;
+    }
+}
+
+start();

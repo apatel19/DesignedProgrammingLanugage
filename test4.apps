@@ -1,0 +1,101 @@
+
+&^
+    Author: Apurva Patel
+    Description: Trying out different data types and Implemented rock paper Scissors.
+^&
+
+&& just so I know different data types are working
+var str = "Apurva Patel";
+var int = 5;
+var real = 3.14159;
+var t = TRUE;
+var f = FALSE;
+
+struct playerInfo {
+    var name;
+    var object;
+}
+
+struct type1 {
+    var one = "Rock";
+    var two = "Paper";
+    var three = "Scissors";
+} 
+
+struct type2 {
+    var two = "Rock";
+    var three = "Paper";
+    var one = "Scissors";
+}
+
+function setObjectsWithPlayer1 (player, input){
+    if (input == 1) {
+        player.object = type1.one;
+    }
+    if (input == 2) {
+        player.object = type1.two;
+    }
+    if (input == 3){
+        player.object = type1.three;
+    }
+}
+
+function setObjectsWithPlayer2 (player, input){
+    if (input == 1) {
+        player.object = type2.one;
+    }
+    if (input == 2) {
+        player.object = type2.two;
+    }
+    if (input == 3){
+        player.object = type2.three;
+    }
+}
+
+function checkWhoWins (player1, player2) {
+    var p1Obj = player1.object;
+    var p2Obj = player2.object;
+    
+    if (p1Obj == "Paper"){
+            print("Player 1 WON!");
+        } 
+
+    if (p2Obj == "Paper"){
+            print("Player 2 WON!");
+        } 
+
+    else {
+        print("Match draw! Both picked same object.");
+        print("Restarting...");
+        main();
+    }
+
+}
+
+function main () {
+   var playerInfo_player1;
+   var playerInfo_player2;
+
+    print("Enter in Player1 name: ");
+    player1.name = scanner.input();
+
+    print("Enter in Player 2 name: ");
+    player2.name = scanner.input();
+
+    print ("Now the game begins!");
+
+    print(player1.name + " Pick number: 1 or 2 or 3");
+    var player1Input = scanner.nextInt();
+
+    setObjectsWithPlayer1 (player1, player1Input);
+
+    print("\(player2.name)  Pick number: 1 or 2 or 3");
+    var player2Input = scanner.nextInt(); 
+
+    setObjectsWithPlayer2(player2, player2Input);
+
+    checkWhoWins(player1, player2);
+
+}
+
+main();

@@ -1,0 +1,40 @@
+
+&^
+    Author: Apurva Patel
+    Description: Sample test file.
+^&
+
+ var globVar = 08;
+ var globalReal = 3.14;
+
+function addInt (num) {
+    return num + globVar;
+}
+
+function doAddition (X, Y) {
+    function add () {
+        return X + Y;
+    }
+    return add;
+}
+
+function main() {
+    print("Apurva");
+    globVar = globVar + 100;
+
+    && This is a single line comment
+
+    globVar = addInt(5);
+
+    print (globVar);
+
+    var add = doAddition(10, 20);
+
+    print(add());
+
+    print(globalReal);
+
+    return 0;
+}
+
+main();
