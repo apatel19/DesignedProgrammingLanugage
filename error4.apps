@@ -1,0 +1,9 @@
+
+var global = "String";
+
+function define () {
+    var sum = "Data" + 100;
+    println(sum);
+}
+
+define();

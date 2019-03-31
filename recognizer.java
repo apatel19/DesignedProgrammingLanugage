@@ -11,7 +11,7 @@ class recognizer {
     public Lexeme advance() throws Exception {
         Lexeme old = currentLexeme;
         currentLexeme = l.lex();
-        //System.out.println("OLD: " + old.type + " | Current: " + currentLexeme.type );
+        //System.out.println("OLD: " + old.type + " | Current: " + currentLexeme.type ); // for testing
         return old;
     }
 
@@ -31,14 +31,8 @@ class recognizer {
             System.out.printf("Line %d: received %s, expected %s.\n", l.line, currentLexeme.type, type);
             System.out.println("INVALID");
             System.exit(1);
-        } else if (type.equals("END_OF_INPUT")) {
-            System.out.println("VALID");
-            System.exit(0);
         }
     }
-
-
-
     // Pending 
 
     public boolean programPending() {
@@ -46,7 +40,7 @@ class recognizer {
     }
 
     public boolean definitionPending() {
-        return varDefinitionPending() || functionDefinitionPending() || structDefinitionPending(); 
+        return varDefinitionPending() || functionDefinitionPending() || structDefinitionPending();
     }
 
     public boolean structDefinitionPending() {
@@ -56,10 +50,6 @@ class recognizer {
     public boolean varDefinitionPending() {
         return check("VARIABLEDEF") || check("VARIABLE");
     }
-
-    public boolean varDefPending () {
-        return check("SEMICOLON");
-    }  
 
     public boolean functionDefinitionPending() {
         return check("FUNCTIONDEF");
@@ -71,7 +61,6 @@ class recognizer {
 
     public boolean paramListPending() {
         return check("VARIABLE");
-        
     }
 
     public boolean expressionListPending() {
@@ -90,10 +79,15 @@ class recognizer {
         return check("VARIABLE");
     }
 
+    public boolean arrayDefPending() {
+        return check("OBRACKET");
+    }
+
     public boolean unaryPending() {
-        return idDefPending() || check("STRING") || numericPending() || check("CHAR")
+        return idDefPending() || check("STRING") || numericPending() || arrayDefPending() || check("CHAR")
             || check("MINUS") || check("OPAREN") || functionCallPending() || check("NULL")
-            || check("TRUE") || check("FALSE") || check("PRINT") || check("RETURN") || check("NOT");
+            || check("TRUE") || check("FALSE") || check("PRINT") || check("PRINTLN") || check("RETURN") || check("NOT") || check("VBAR")
+            || check("OPEN_FILE_FOR_READING") || check("AT_FILE_END") || check("CLOSE_FILE") || check("READ_INTEGER_FROM_FILE");
     }
 
     public boolean operatorPending() {
@@ -136,11 +130,21 @@ class recognizer {
             return varDef();
         }
         else if (functionDefinitionPending()) {
+            // match("FUNCTIONDEF");
+            // Lexeme temp = new Lexeme("FUNCTIONDEF", match("VARIABLE"), funcDef());
+            // Lexeme tree = temp;
+            // return tree;
             Lexeme tree = match("FUNCTIONDEF");
-            tree.left = match("VARIABLE");
+            if (check("VARIABLE")){
+                tree.left = match("VARIABLE");
+            }
             tree.right = funcDef();
-            Lexeme temp = new Lexeme("FUNCTIONDEF", null, tree);
-            tree = temp;
+
+            if (tree.left != null) {
+                Lexeme temp = new Lexeme ("FUNCTIONDEFINITION", null, tree);
+                tree = temp;
+                return tree;
+            } 
             return tree;
         } 
         else if (idDefPending()) {
@@ -158,46 +162,98 @@ class recognizer {
        Lexeme b = block();
        return new Lexeme ("STRUCTDEF", a, b);
     }
-
     public Lexeme varDef() throws Exception {
-        if (check("VARIABLEDEF")){
+        if(check("VARIABLEDEF")){
             match("VARIABLEDEF");
-            if (check("VARIABLE")){
-               Lexeme a = match("VARIABLE");
-                if (check("SEMICOLON")){
-                    //return new Lexeme("VARIABLEDEF", a, match("SEMICOLON"));
-                    return match("SEMICOLON");
-                } else if (check("ASSIGN")){
-                    match("ASSIGN");
-                    Lexeme b = expr();
-                    Lexeme c = match("SEMICOLON");
-                    return new Lexeme("VARIABLEDEF", b, c);
+            Lexeme variable = match("VARIABLE");
+            if (check("SEMICOLON")){
+                Lexeme semicolon = match("SEMICOLON");
+                Lexeme temp = new Lexeme("DECLARE", variable, null);
+                return new Lexeme ("VARIABLEDEF", temp, semicolon);
+            }
+            else if (check("ASSIGN")){
+                variable.left = match("ASSIGN");
+                Lexeme valueVariable = expr();
+                if (valueVariable != null && valueVariable.left != null && valueVariable.left.string != null){
+                    if (valueVariable.left.string.equals("openFileForReading")){
+                        Lexeme semicolon = match("SEMICOLON");
+                        Lexeme temp = new Lexeme("OPENFILE", valueVariable, semicolon);
+                        return new Lexeme("VARIABLEDEF", variable, temp);
+                    } else if (valueVariable.left.string.equals("readIntegerFromFile")){
+                        Lexeme semicolon = match("SEMICOLON");
+                        Lexeme temp = new Lexeme("READFILE", valueVariable, semicolon);
+                        return new Lexeme("VARIABLEDEF", variable, temp);
+                    } else if (valueVariable.left.string.equals("endOfFile")){
+                        Lexeme semicolon = match("SEMICOLON");
+                        Lexeme temp = new Lexeme("ENDFILE", valueVariable, semicolon);
+                        return new Lexeme("VARIABLEDEF", variable, temp);
+                    }
                 }
+                Lexeme semicolon = match("SEMICOLON");
+                Lexeme temp = new Lexeme ("TEMP", valueVariable, semicolon);
+                return new Lexeme("VARIABLEDEF", variable, temp);
             }
         }
-        Lexeme c = match("VARIABLE");
+        Lexeme variable = match("VARIABLE");
+            if (check("SEMICOLON")){
+                Lexeme semicolon = match("SEMICOLON");
+                Lexeme temp = new Lexeme("DECLARE", variable, null);
+                return new Lexeme ("DEFINE", temp, semicolon);
+            }
+            else if (check("ASSIGN")){
+                variable.left = match("ASSIGN");
+                Lexeme valueVariable = expr();//match("VARIABLE")
+                Lexeme semicolon = match("SEMICOLON");
+                Lexeme temp = new Lexeme ("TEMP", valueVariable, semicolon);
+                return new Lexeme("DEFINE", variable, temp);
+            } else if (check("OPAREN")){
+                Lexeme call = funcCall();
+                if (check("DOT")){
+                    Lexeme dot = dotFunc();
+                    Lexeme temp = new Lexeme ("TEMP", dot, match("SEMICOLON"));
+                    Lexeme temp1 = new Lexeme ("TEMP", variable, call);
+                    return new Lexeme("IDFUNCCALL", temp1, temp);
+                } else {
+                    Lexeme temp = new Lexeme ("GLUE", call, match("SEMICOLON"));
+                    return new Lexeme("IDFUNCCALL", variable, temp);
+                }
+                
+            } else if (check("DOT")) {
+                Lexeme temp = new Lexeme ("TEMP", dotFunc(), match("SEMICOLON"));
+                return new Lexeme("DOT", variable, temp);
+            }
+        return null;
+    }
 
-        if (check("ASSIGN")){
-            match("ASSIGN");
-            Lexeme a = optExprList();
-            Lexeme b = match("SEMICOLON");
-            return new Lexeme("VARIABLEDEF",a, b);
-        } 
-        Lexeme d = funcCall();
-        match("SEMICOLON");
-        return new Lexeme ("FUNCTIONCALL", c, d);
+    public Lexeme dotFunc() throws Exception {
+        Lexeme a = match("DOT");
+        if (check("PUSH_DOWN")){
+           Lexeme func = match("PUSH_DOWN");
+           func.right = funcCall();
+           return new Lexeme("ADDTOARRAY", a, func);
+        } else if (check("EDIT_AT")){
+           Lexeme func = match("EDIT_AT");
+           func.right = funcCall();
+           return new Lexeme("EDITARRAY", a, func);
+        }
+        Lexeme func = match("VARIABLE");
+        func.right = funcCall();
+        return new Lexeme("DOTFUNC", a, func);
+    }
+
+    public Lexeme arrayAccess() throws Exception {
+        Lexeme a = match("VBAR");
+        Lexeme b = match("INTEGER");
+        b.right = match("VBAR");
+        return new Lexeme ("ARRAYACCESS", a, b);
     }
 
     public Lexeme funcDef() throws Exception {
-       // match("FUNCTIONDEF");
-       // Lexeme a = match("VARIABLE");
-       //tree.left = match("VARIABLE");
         Lexeme a = match("OPAREN");
-        Lexeme b =  optExprList(); //optParamList();
+        Lexeme b = optParamList();
         Lexeme c = match("CPAREN");
         Lexeme d = block();
-        return new Lexeme("FUNCDEF", a, new Lexeme("GLUE", b, new Lexeme("GLUE", c,
-                new Lexeme("GLUE", d, null))));
+        return new Lexeme ("FUNCDEF", a, new Lexeme ("GLUE", b, new Lexeme("GLUE", c, new Lexeme("GLUE", d, null))));
     }
 
     public Lexeme optParamList() throws Exception {
@@ -211,7 +267,7 @@ class recognizer {
         Lexeme a = match("VARIABLE");
         Lexeme b = null;
         if (check("COMMA")) {
-            match("COMMA");
+            a.right = match("COMMA");
             b = paramList();
         }
         return new Lexeme("PARAMLIST", a, b);
@@ -228,7 +284,7 @@ class recognizer {
         Lexeme a = expr();
         Lexeme b = null;
         if (check("COMMA")) {
-            match("COMMA");
+            a.right = match("COMMA");
             b = expressionList();
         }
         return new Lexeme("EXPLIST", a, b);
@@ -236,25 +292,24 @@ class recognizer {
     
     public Lexeme expr() throws Exception {
         Lexeme tree = unary();
-
         if (operatorPending()) {
             Lexeme temp = operator();
             temp.left = tree;
             temp.right = expr();
             tree = temp;
         }
+        else if (check("VBAR")){
+            Lexeme temp = arrayAccess();
+            tree.left = temp;
+        }
         return tree;
     }
 
     public Lexeme funcCall() throws Exception {
-        // match("OPAREN");
-        // Lexeme b = optExprList();
-        // match("CPAREN");
-        //return b;
         Lexeme a = match("OPAREN");
         Lexeme b = optExprList();
         Lexeme c = match("CPAREN");
-        return new Lexeme("FUNCTIONCALL", a, new Lexeme("GLUE", b, new Lexeme("GLUE", c, null)));
+        return new Lexeme("IDFUNCCALL", a, new Lexeme("GLUE", b, new Lexeme("GLUE", c, null)));
     }
 
     public Lexeme numeric() throws Exception {
@@ -272,7 +327,7 @@ class recognizer {
         Lexeme tree;
         if (idDefPending()) {
             tree = idDef();
-        } 
+        }
         else if (check("STRING")) {
             tree = match("STRING");
             tree.string = tree.string.substring(1, tree.string.length() - 1);
@@ -294,9 +349,9 @@ class recognizer {
         } 
         else if (check("OBRACKET")) {
             match("OBRACKET");
-            Lexeme a = expr();
-            match("CBRACKET");
-            tree = new Lexeme("ARRAYDEF", a, null);
+            Lexeme a = optExprList();
+            Lexeme b = match("CBRACKET");
+            tree = new Lexeme("ARRAYDEF", a, b);
         }
         else if (check("VARIABLE")){
             Lexeme b = match("VARIABLE");
@@ -313,15 +368,13 @@ class recognizer {
             tree = match("PRINT");
             match("OPAREN");
             tree.left = optExprList();
-            match("CPAREN");
-            tree.right = null;
+            tree.right = match("CPAREN");
         }
         else if (check("PRINTLN")) {
             tree = match("PRINTLN");
             match("OPAREN");
             tree.left = expressionList();
-            match("CPAREN");
-            tree.right = null;
+            tree.right = match("CPAREN");;
         }
         else if (check("NOT")) {
             tree = match("NOT");
@@ -331,6 +384,12 @@ class recognizer {
         else if (check("RETURN")){
             tree = match("RETURN");
             tree.left = optExprList();
+          //  tree.right = new Lexeme ("SEMICOLON"); changed
+        }
+        ///ADDED
+        else if(check("DOT")){
+            tree = dotFunc();
+            tree.right = match("SEMICOLON");
         }
         else {
             tree = match("INVALID");
@@ -338,19 +397,15 @@ class recognizer {
         return tree;
     }
 
-
-    
      public Lexeme idDef() throws Exception {
         Lexeme a = match("VARIABLE");
         if (check("OPAREN")) {
             Lexeme b = funcCall();
-            return new Lexeme("IDFUNCCALL", a, b);
+            Lexeme temp = new Lexeme ("GLUE", b, null); //Added on Mar 29th
+            return new Lexeme("IDFUNCCALL", a, temp); //CHanging on Mar28th
         }
         else if (check("DOT")) {
-            Lexeme b = match("DOT");
-            b.left = a;
-            b.right = idDef();
-            return b;
+            return new Lexeme("DOT", a, dotFunc());    
         }
         return a;
     }
@@ -374,6 +429,8 @@ class recognizer {
                 return new Lexeme("GREATEREQUALTO");
             }
             return a;
+        } else if (check("GREATEREQUALTO")) {
+            return match("GREATEREQUALTO");  
         } 
         else if (check("LESSEQUALTO")){
            return match("LESSEQUALTO");
@@ -398,6 +455,9 @@ class recognizer {
                 return new Lexeme("NOTEQUALTO");
             }
             return a;
+        }
+        else if (check("NOTEQUALTO")){
+            return match("NOTEQUALTO");
         }
         else if (check("PLUS")) {
             return match("PLUS");
@@ -434,10 +494,7 @@ class recognizer {
     public Lexeme block() throws Exception {
         match("OBRACE");
         Lexeme a = optStatementList();
-        Lexeme b = null;
         match("CBRACE");
-        
-        
         return new Lexeme("BLOCK", a, null);
     }
 
@@ -451,11 +508,9 @@ class recognizer {
     public Lexeme statementList() throws Exception {
         Lexeme a = statement();
         Lexeme b = null;
-
         if (statementListPending()) {
             b = statementList();
         }
-
         return new Lexeme("STATEMENTLIST", a, b);
     }
 
@@ -469,19 +524,13 @@ class recognizer {
         }
         else if (exprPending()) {
             a = expr();
-            match("SEMICOLON");
+            return new Lexeme("STATEMENT", a, match("SEMICOLON"));
         }
-        else if (functionDefinitionPending()){
-            Lexeme tree = match("FUNCTIONDEF");
-            tree.left = match("VARIABLE");
-            tree.right = funcDef();
-            Lexeme temp = new Lexeme("FUNCTIONDEF", null, tree);
-            tree = temp;
-            a = tree;
-            //a = funcDef();
-        } else if (varDefinitionPending()){
-            a = varDef();
-        } else {
+        else if (definitionPending()){
+            a = definition();
+            return new Lexeme ("STATEMENT", a, null);
+        }
+        else {
             System.out.println("Error at line: " + currentLexeme.line);
             System.exit(1);
         }
@@ -492,7 +541,7 @@ class recognizer {
         match("IF");
         match("OPAREN");
         Lexeme a = expr();
-        match("CPAREN");
+        a.right.right = match("CPAREN");
         Lexeme b = block();
         Lexeme c = optElse();
         return new Lexeme("IFSTATEMENT", a, new Lexeme("GLUE", b,
@@ -516,13 +565,23 @@ class recognizer {
         match("WHILE");
         match("OPAREN");
         Lexeme a = expr();
-        match("CPAREN");
+        a.right.right = match("CPAREN"); 
         Lexeme b = block();
         return new Lexeme("WHILE", a, b);
     }
 
-     public Lexeme parse(String f) throws Exception {
+    public Lexeme parse(String f) throws Exception {
         l = new Lexer(f);
+        currentLexeme = l.lex();
+        output = program();
+        match("END_OF_INPUT");
+        return output;
+    }
+
+    String intFile = "";
+    public Lexeme parseWithFile (String f, String f2) throws Exception {
+        l = new Lexer(f);
+        intFile = f2;
         currentLexeme = l.lex();
         output = program();
         match("END_OF_INPUT");
@@ -531,13 +590,10 @@ class recognizer {
 
     public static void main(String[] args) {
         recognizer reco = new recognizer();
-        Lexeme lexeme;
         try {
-            lexeme = reco.parse(args[0]);
+            reco.parse(args[0]);
         } catch (Exception e) {
             e.printStackTrace();
         }
-           
     }
-
 }

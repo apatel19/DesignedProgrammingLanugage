@@ -1,0 +1,13 @@
+function main () {
+	&& arg1 is command line arg1. If want to add file name remove arg1 and add file name "int.txt"
+	var sum = 0;
+	var openFile = openFileForReading(arg1);
+	var check = endOfFile(openFile);
+	while (check != "END"){
+		var i = readIntegerFromFile(openFile);
+		sum = sum + i;
+		var check = endOfFile(openFile);
+	}
+	println("SUM IS: ", sum);
+}
+main();

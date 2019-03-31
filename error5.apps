@@ -1,0 +1,9 @@
+var global = 10;
+var globalStr = "Str";
+
+function def () {
+
+    var answer = global / globalStr;
+    print(answer);
+}
+def();

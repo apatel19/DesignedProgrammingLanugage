@@ -1,0 +1,38 @@
+
+function three() {
+    println("I am third function");
+}
+
+function second(third_function) {
+    println("I am second function");
+    third_function();
+}
+
+function main () {
+    println("Starting main function.");
+    println("Run function second with function three as its argument. Later call three function.");
+    second(three);
+    println("Adding 5 and 6...");
+    var answer = add(5, 6);
+    println(answer);
+    println("Adding 100 and 1000 .... answer is ", add(100, 1000));
+
+    println("topLevel function contatins doSubtraction function, and returns doSubtraction, doSubtraction returns x - y");
+    var z = topLevel();
+    println(z(100,200));
+}
+
+function add(x, y) {
+    var temp = x + y;
+    temp;
+}
+
+function topLevel() {
+    function doSubtraction(x, y) {
+        var temp = x - y;
+        temp;
+    }
+    doSubtraction;
+}
+
+main();

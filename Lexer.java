@@ -130,7 +130,10 @@ class Lexer {
         }
         else if (buffer.equals("function")){
             return new Lexeme("FUNCTIONDEF");
-        } 
+        }
+        // else if (buffer.equals("lambda")){
+        //     return new Lexeme("LAMBDA");
+        // } 
         else if (buffer.equals("struct")) {
             return new Lexeme("STRUCT");
         }
@@ -156,10 +159,12 @@ class Lexer {
             return new Lexeme("OR");
         }
         else if (buffer.equals("true")) {
-            return new Lexeme("BOOLEAN", true);
+            return new Lexeme("TRUE");
+            //return new Lexeme("BOOLEAN", true);
         }
         else if (buffer.equals("false")) {
-            return new Lexeme("BOOLEAN", false);
+            return new Lexeme("FALSE");
+            //return new Lexeme("BOOLEAN", false);
         }
         else if (buffer.equals("empty")) {
             return new Lexeme("EMPTY");
@@ -175,6 +180,12 @@ class Lexer {
         }
         else if (buffer.equals("NOT")) {
             return new Lexeme("NOT");
+        }
+        else if (buffer.equals("push_down")){
+            return new Lexeme("PUSH_DOWN");
+        }
+        else if (buffer.equals("edit_at")){
+            return new Lexeme("EDIT_AT");
         }
         return new Lexeme ("VARIABLE", buffer);
     }
@@ -256,6 +267,8 @@ class Lexer {
                 return new Lexeme("PLUS");
             case '-':
                 return new Lexeme("MINUS");
+            case '|':
+                return new Lexeme("VBAR");
             case '*':
                 return new Lexeme("TIMES");
             case '/':

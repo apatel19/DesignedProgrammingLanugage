@@ -14,6 +14,8 @@ varDefinition	: VAR ID EQUAL expr SEMI
 
 funcDefinition	: FUNCTION ID OPAREN optParamList CPAREN block
 
+lambdaDef       : LAMBDA OPAREN optParamList CPAREN block
+
 funcCall    	: ID OPAREN optParamList CPAREN
 
 idDef	        : ID
@@ -43,14 +45,15 @@ unary           : idDef
 	        | CHAR
                 | MINUS unary
                 | OPAREN expr CPAREN
+                | VBAR expr VBAR
                 | funcCall
+                | lambdaDef
                 | NULL
                 | TRUE
-                | FALSE  
+                | FALSE 
                 | PRINT OPAREN expressionList CPAREN
 	        | RETURN optExprList SEMI
-                | NOT
-	
+                | NOT	
 
 operator        : 
                 | NOTEQUAL

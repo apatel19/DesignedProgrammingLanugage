@@ -4,10 +4,6 @@
     Scanner Class: Scan the given input file.
 */
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-
 public class scanner {
      Lexer lexer;
      String token;

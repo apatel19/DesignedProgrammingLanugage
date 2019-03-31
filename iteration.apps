@@ -1,0 +1,46 @@
+function main (x) {
+    print("Current Value of x is ");
+    println(x);
+    println ("Iterating while loop.");
+    var y = 5;
+    while (x < 2 ) {
+        print("Current value of x is ");
+        print(x);
+        println(" -------");
+        while (y > 0) {
+            print("Current value of y is ");
+            println(y);
+            y = y - 1;
+        }
+        y = 5;
+        x = x + 1;
+    }
+
+    var i = 5;
+    var j = 5;
+    while (i > 0){
+        while(j > 0){
+            print("x");
+            j = j - 1;
+        }
+    i = i - 1;
+    j = i;
+    println("");
+    }
+
+    i = 0;
+    j = 0;
+    while (i < 5){
+        &&var temp = i + 1;
+        while(j <= i){
+            print("x");
+            j = j + 1;
+        }
+    i = i + 1;
+    j = 0;
+    println("");
+    }
+
+}
+
+main(0);

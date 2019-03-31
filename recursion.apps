@@ -1,0 +1,31 @@
+function recursion(n) {
+    if (n == 3) {
+    	 "DONE recursion";
+    }
+    else {
+        println("n is ", n);
+        recursion(n + 1);
+    }
+}
+
+function fib(n) {
+    if (n <= 1) {
+       n;
+    }
+    else {
+		 fib(n - 1) + fib(n - 2);
+    }
+}
+
+function main() {
+    println("print 3 ints recursively...");
+    var k = recursion(0);
+	println(k);
+
+    println("PRINT fib");
+    println("fibonacci of 10 is");
+	k = fib(10);
+	println(k);
+}
+
+main();

@@ -1,0 +1,8 @@
+var x = 5;
+function main () {
+    var y = 10;
+    var sum = x + y;
+    println("Total of x and y is ");
+    print(sum);
+    & commenting this line;
+}

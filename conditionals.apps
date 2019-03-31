@@ -1,0 +1,40 @@
+function main (value) {
+
+	if (value < 100){
+		println("Value is less than 100.");
+	} else {
+		println("Value is less than 5000.");
+	}
+
+	value = 100;
+	print("Value is now ");
+	println(value);
+
+	if (value <= 200) {
+		println("Value is now < 200");
+	} else {
+		println("Value is not less than 200");
+	}
+
+	if (value == 100) {
+		println("Value is 100");
+	}
+
+	value = 200 + 100;
+	println("Value current is 300.");
+
+	if (value >= 300) {
+		println("Value is >= 300");
+	}
+
+	while(value < 1000) {
+		print("Current value is ");
+		println(value);
+		var temp = 200 + value;
+		value = temp;
+	}
+	print("Final value is ");
+	println(value);
+}
+
+main(1000);

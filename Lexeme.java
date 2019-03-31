@@ -1,3 +1,4 @@
+
 /*
     Author: Apurva Patel
     Lexeme Class: Has what type of data and its value stored in this created object class. Also display the given 
@@ -5,27 +6,35 @@
 */
 
 import java.util.ArrayList;
-
+import java.util.Scanner;
 
 class Lexeme {
 
-    String type;
+    String type;    //Lexeme types
+
     String string;
     int integer;
     double real;
     char c;
     int line;
     boolean bool;
-
+    
+    Scanner reader; //For reading files
+    
+    //To create tree
     Lexeme left;
     Lexeme right;
 
     ArrayList<Lexeme> arrVal;
 
-
-    public Lexeme (String t){
+    public Lexeme(String t) {
         type = t;
-    } 
+    }
+
+    public Lexeme(String t ,Scanner s) {
+       type = t; 
+       reader = s;
+    }
 
     public Lexeme(String t, Lexeme l, Lexeme r) {
         type = t;
@@ -69,6 +78,8 @@ class Lexeme {
         bool = b;
     }
 
+    //Checking what values Lexeme has
+
     public boolean checkValue(Lexeme lexeme) {
         if (lexeme.type.equals("INTEGER")) {
             return true;
@@ -95,37 +106,70 @@ class Lexeme {
             return false;
     }
 
-    public void display (Lexeme lexeme) {
+    //Display function withoud Lexeme types for priting
 
+    public void display (Lexeme lexeme) {
         if (lexeme.type.equals("INTEGER")) {
-            System.out.print("INTEGER " + lexeme.integer);
+            System.out.print(lexeme.integer);
         }
         else if (lexeme.type.equals("REAL")) {
-            System.out.print("REAL " + lexeme.real);
+            System.out.print(lexeme.real);
         }
         else if (lexeme.type.equals("STRING")){
-            System.out.print("STRING " + lexeme.string);
+            System.out.print(lexeme.string);
         } 
         else if (lexeme.type.equals("VARIABLE")){
-            System.out.print("VARIABLE " + lexeme.string);
+            System.out.print(lexeme.string);
         }
         else if (lexeme.type.equals("BOOLEAN")) {
-            System.out.print("BOOLEAN " + lexeme.bool);
+            System.out.print(lexeme.bool);
         }
         else if (lexeme.type.equals("EMPTY")) {
             System.out.print("empty");
         }
         else if (lexeme.type.equals("VARIABLEDEF")) {
-            System.out.print("VARIABLEDEF");
+            System.out.println("VARIABLEDEF");
         } 
         else if (lexeme.type.equals("UNKNOWN")) {
-            System.out.print("Found UNKNOWN type: " + lexeme.string +" at line: " + lexeme.line);
+            System.out.println("Found UNKNOWN type: " + lexeme.string +" at line: " + lexeme.line);
             System.exit(1);
         }
         else {
-            System.out.print(lexeme.type);
+            System.out.println(lexeme.type);
         }
-
     }
+    
+    //Display function with TYPE for RECOGNIZING LEXEME TYPES
+
+    // public void display (Lexeme lexeme) {
+    //     if (lexeme.type.equals("INTEGER")) {
+    //         System.out.println("INTEGER " + lexeme.integer);
+    //     }
+    //     else if (lexeme.type.equals("REAL")) {
+    //         System.out.println("REAL " + lexeme.real);
+    //     }
+    //     else if (lexeme.type.equals("STRING")){
+    //         System.out.println("STRING " + lexeme.string);
+    //     } 
+    //     else if (lexeme.type.equals("VARIABLE")){
+    //         System.out.println("VARIABLE " + lexeme.string);
+    //     }
+    //     else if (lexeme.type.equals("BOOLEAN")) {
+    //         System.out.println("BOOLEAN " + lexeme.bool);
+    //     }
+    //     else if (lexeme.type.equals("EMPTY")) {
+    //         System.out.println("empty");
+    //     }
+    //     else if (lexeme.type.equals("VARIABLEDEF")) {
+    //         System.out.println("VARIABLEDEF");
+    //     } 
+    //     else if (lexeme.type.equals("UNKNOWN")) {
+    //         System.out.println("Found UNKNOWN type: " + lexeme.string +" at line: " + lexeme.line);
+    //         System.exit(1);
+    //     }
+    //     else {
+    //         System.out.println(lexeme.type);
+    //     }
+    // }
 
 }

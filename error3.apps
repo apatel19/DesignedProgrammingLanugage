@@ -1,0 +1,6 @@
+
+var global = "Global";
+
+function gl () {
+    println(global)
+}

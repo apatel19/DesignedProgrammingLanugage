@@ -1,0 +1,40 @@
+function main () {
+	var array1 = [];
+	println("Defined array1.");
+
+	array1.push_down(10,20); && Accepts any numbers of arguments
+	println("Added values in array1.");
+
+	var one = array1|1|;
+	print("Value at index 1 in array1 is ");
+	println(one);
+
+	array1.edit_at(1, 10000);
+	println("Changed value at index 1 in array1");
+	var new = array1|1|;
+	print("New value at index 1 is: ");
+	println(new);
+
+	var array2 = ["Apurva", "Patel", "CS403"];
+	println("Defined array2!");
+
+	var value0 = array2|0|;	
+	print("Value at 0 index in array2 is ");
+	println(value0);
+
+	println("Adding values in array2");
+	array2.push_down("Fun", "LoveIt");
+
+	var value3 = array2|3|;
+	print("Value at index 3 is ");
+	println(value3);
+
+	println("Changing value at index 3 in array2.");
+	array2.edit_at(3, "Not Fun!!");
+	var newVal = array2|3|;
+
+	print("New Value is now: ");
+	println(newVal);
+}
+
+main();

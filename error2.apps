@@ -1,0 +1,5 @@
+
+function define () {
+    var value = 1000.003r;
+    println(value);
+}
