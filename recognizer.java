@@ -333,10 +333,12 @@ class recognizer {
             tree.string = tree.string.substring(1, tree.string.length() - 1);
         }
         else if (check("TRUE")) {
-            tree = match("TRUE");
+            match("TRUE");
+            tree = new Lexeme ("STRING", "TRUE");
         } 
         else if (check("FALSE")) {
-            tree = match("FALSE");
+            match("FALSE");
+            tree = new Lexeme ("STRING", "FALSE");
         }
         else if (check("INTEGER") || check("REAL")) {
             tree = numeric();

@@ -32,6 +32,23 @@ To define new variable:
     var k;           && Declare i;
     i = 1;           && Update value
 
+Boolean in language is not a boolean but its a string. true, false.
+    && Sample boolean program.
+    function main(x) {
+        println(x); && Will print string "TRUE"
+        var i = 5;
+        var j = 0;
+        while (x != false){
+                if (j == i){
+                        x = false;  && changing value of x to "FALSE"
+                }
+                println(j);
+                j = j + 1;
+        }
+    }
+    var x = true;
+    main(x);
+
 For function:
     function main (value, str, func) {
         && function body

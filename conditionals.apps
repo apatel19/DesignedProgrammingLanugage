@@ -35,6 +35,19 @@ function main (value) {
 	}
 	print("Final value is ");
 	println(value);
+
+
+	var bool = true; 
+    println(bool); && Will print string "TRUE"
+    var i = 5;
+    var j = 0;
+    while (bool != false){
+        if (j == i){
+            bool = false;  && changing value of bool to "FALSE"
+        }
+        println(j);
+        j = j + 1;
+    }
 }
 
 main(1000);
